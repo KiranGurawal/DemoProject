@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-banner single-line >
+    <v-banner single-line>
       <div class="about">
         <div class="header">
           <div class="title">
@@ -53,17 +53,8 @@
         </v-col>
         <v-col cols="7">
           <v-card max-width="500">
-            <v-form ref="form" id="form" @submit.prevent="formValidation">
-              <div class="form-control">
-                <label for="username" class="heading"></label>
-                <v-text-field
-                  label="username"
-                  v-model="username"
-                  type="text"
-                  id="username"
-                ></v-text-field>
-                <span v-if="errorUsername" >{{ errorUsername }}</span>
-              </div>
+            <v-form ref="form" id="form" @submit.prevent="loginValidation">
+
               <div class="form-control">
                 <label for="email" class="heading"></label>
                 <v-text-field
@@ -84,20 +75,8 @@
                 ></v-text-field>
                 <span v-if="errorPassword">{{ errorPassword }}</span>
               </div>
-              <div class="form-control">
-                <label for="confpass" class="heading"></label>
-                <v-text-field
-                  label="Confirm Password"
-                  v-model="confpassword"
-                  type="password"
-                  id="confpassword"
-                ></v-text-field>
-                <span v-if="errorConfPassword" color="red">{{
-                  errorConfPassword
-                }}</span>
-              </div>
-              <v-btn depressed  rounded  align="center"  color="primary" type="submit">Signup</v-btn>
-              <v-btn depressed  rounded align="center" color="teal"><router-link to="/SignIn" color="white">Sign In</router-link></v-btn>
+              
+              <v-btn depressed  rounded  align="center"  color="primary" type="submit">Login</v-btn>
             </v-form>
           </v-card>
         </v-col>
@@ -107,95 +86,49 @@
 </template>
 <script>
 export default {
-  name: "SignUp",
+  name: "SignIn",
   data() {
     return {
-      username: "",
       email: "",
       password: "",
-      confpassword: "",
-      errorUsername: "",
       errorEmail: "",
       errorPassword: "",
-      errorConfPassword: "",
-      data : [],
     };
   },
   methods: {
-    formValidation() {
-      const userProfile = {
-        username: this.username,
-        email: this.email,
-        password: this.password,
-      };
-      console.log(userProfile);
-      // console.log("hii")
-      //validation for username------------------
-      if (!this.username) {
-        this.errorUsername = "***required this field";
-      } else if (!/^[a-zA-Z\s]+$/.test(this.username)) {
-        this.errorUsername = "***Invalid Username";
-      } else {
-        this.errorUsername = "";
-        localStorage.setItem("username", this.username);
-      }
+    loginValidation() {
 
+      const loginDetails = JSON.parse(localStorage.getItem('data'))
+      //console.log(loginDetails);
+     
+      // console.log("hii")
+     
       //validation for email-------------------------
       if (!this.email) {
         this.errorEmail = "***required this field";
-      } else if (
-        !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)
-      ) {
-        this.errorEmail = "***Invalid Email";
-      } else {
+      }
+      else {
         this.errorEmail = "";
-
       }
 
       //validation for password----------------------
       if (!this.password) {
         this.errorPassword = "***required this field";
-      } else if (
-        !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/.test(
-          this.password
-        )
-      ) {
-        this.errorPassword = "*** Invalid Password";
-      } else {
-        this.errorPassword = "";
+      } 
+      
+      else {
+        this.errorPassword="";
       }
-
-      // validation for conform password----------------------
-      if (!this.confpassword) {
-        this.errorConfPassword = "***required this field";
-      } else if (this.confpassword != this.password) {
-        this.errorConfPassword =
-          "*** confirm password and password does not match";
-      } else {
-        this.errorConfPassword = "";
-      }
-      if(this.errorUsername == '' && this.errorEmail == '' && this.errorPassword == '' && this.errorConfPassword == '')
-      {
-        if(localStorage.data){
-          let userData =localStorage.data;
-          this.data = JSON.parse(userData);
+      if(this.errorEmail == "" && this.errorPassword==""){
+        if(this.email == loginDetails[0].email && this.password == loginDetails[0].password){
+          console.log('Login verified');
+          this.$router.push('/dashboard');
         }
-        console.log("Succcessfully done");
-          this.data.push(userProfile);
-          localStorage.setItem('data',JSON.stringify(this.data));
-          this.username="";
-          this.email="";
-          this.password="";
-          this.confpassword ="";
-          alert("Successfully Registration done!")
       }
-
-      // if(this.username && this.email && this.password && this.password){
-      //   alert("registration done..")
-      // }
+       }
     },
-  },
-};
+    
+}
 </script>
 
 <style scoped>
